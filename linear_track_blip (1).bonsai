@@ -1,0 +1,550 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WorkflowBuilder Version="2.9.1"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xmlns:al="clr-namespace:Bonsai.Audio;assembly=Bonsai.Audio"
+                 xmlns:res="clr-namespace:Bonsai.Resources;assembly=Bonsai.System"
+                 xmlns:beh="clr-namespace:Harp.Behavior;assembly=Harp.Behavior"
+                 xmlns:harp="clr-namespace:Bonsai.Harp;assembly=Bonsai.Harp"
+                 xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
+                 xmlns:io="clr-namespace:Bonsai.IO;assembly=Bonsai.System"
+                 xmlns:cv="clr-namespace:Bonsai.Vision;assembly=Bonsai.Vision"
+                 xmlns:dsp="clr-namespace:Bonsai.Dsp;assembly=Bonsai.Dsp"
+                 xmlns:scr="clr-namespace:Bonsai.Scripting.Expressions;assembly=Bonsai.Scripting.Expressions"
+                 xmlns="https://bonsai-rx.org/2018/workflow">
+  <Workflow>
+    <Nodes>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="al:CreateAudioContext">
+          <al:SampleRate>0</al:SampleRate>
+          <al:Refresh>0</al:Refresh>
+          <al:Position>
+            <al:X>0</al:X>
+            <al:Y>0</al:Y>
+            <al:Z>0</al:Z>
+          </al:Position>
+          <al:Velocity>
+            <al:X>0</al:X>
+            <al:Y>0</al:Y>
+            <al:Z>0</al:Z>
+          </al:Velocity>
+          <al:Direction>
+            <al:X>-0</al:X>
+            <al:Y>-0</al:Y>
+            <al:Z>-1</al:Z>
+          </al:Direction>
+          <al:Up>
+            <al:X>0</al:X>
+            <al:Y>1</al:Y>
+            <al:Z>0</al:Z>
+          </al:Up>
+          <al:Gain>1</al:Gain>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="al:AudioResources">
+          <al:Buffers />
+          <al:Sources />
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="res:LoadResources" />
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="al:CreateSource">
+            <al:Gain>1</al:Gain>
+            <al:Pitch>1</al:Pitch>
+            <al:Direction>
+              <al:X>0</al:X>
+              <al:Y>0</al:Y>
+              <al:Z>0</al:Z>
+            </al:Direction>
+            <al:Position>
+              <al:X>0</al:X>
+              <al:Y>0</al:Y>
+              <al:Z>0</al:Z>
+            </al:Position>
+            <al:Velocity>
+              <al:X>0</al:X>
+              <al:Y>0</al:Y>
+              <al:Z>0</al:Z>
+            </al:Velocity>
+            <al:Looping>false</al:Looping>
+            <al:Relative>false</al:Relative>
+            <al:State>Initial</al:State>
+          </Combinator>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="al:AudioWriter">
+            <al:Suffix>None</al:Suffix>
+            <al:Buffered>true</al:Buffered>
+            <al:Overwrite>false</al:Overwrite>
+            <al:SampleRate>44100</al:SampleRate>
+          </Combinator>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="SubscribeSubject">
+          <Name>Behavior1 Events</Name>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="beh:Parse">
+          <harp:Register xsi:type="beh:TimestampedDigitalInputState" />
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="rx:Timestamp" />
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="io:CsvWriter">
+          <io:FileName>VisibleGoalLocationPilot\Test\DigitalInputState.csv</io:FileName>
+          <io:ListSeparator>,</io:ListSeparator>
+          <io:Append>true</io:Append>
+          <io:Overwrite>false</io:Overwrite>
+          <io:Suffix>Timestamp</io:Suffix>
+          <io:IncludeHeader>true</io:IncludeHeader>
+          <io:Selector>Value.Value,Timestamp.Hour,Timestamp.Minute,Timestamp.Second,Timestamp.Millisecond</io:Selector>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="rx:BehaviorSubject" TypeArguments="harp:HarpMessage">
+          <rx:Name>Behavior1 Commands</rx:Name>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="beh:Device">
+            <harp:OperationMode>Active</harp:OperationMode>
+            <harp:OperationLed>On</harp:OperationLed>
+            <harp:DumpRegisters>false</harp:DumpRegisters>
+            <harp:VisualIndicators>On</harp:VisualIndicators>
+            <harp:Heartbeat>Disabled</harp:Heartbeat>
+            <harp:IgnoreErrors>false</harp:IgnoreErrors>
+            <harp:PortName>COM3</harp:PortName>
+          </Combinator>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="rx:PublishSubject">
+          <Name>Behavior1 Events</Name>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="rx:BehaviorSubject" TypeArguments="harp:HarpMessage">
+          <rx:Name>Behavior2 Commands</rx:Name>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="beh:Device">
+            <harp:OperationMode>Active</harp:OperationMode>
+            <harp:OperationLed>On</harp:OperationLed>
+            <harp:DumpRegisters>false</harp:DumpRegisters>
+            <harp:VisualIndicators>On</harp:VisualIndicators>
+            <harp:Heartbeat>Disabled</harp:Heartbeat>
+            <harp:IgnoreErrors>false</harp:IgnoreErrors>
+            <harp:PortName>COM4</harp:PortName>
+          </Combinator>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="rx:PublishSubject">
+          <Name>Behavior2 Events</Name>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="SubscribeSubject">
+          <Name>Behavior2 Events</Name>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="beh:Parse">
+          <harp:Register xsi:type="beh:TimestampedDigitalInputState" />
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="rx:Timestamp" />
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="io:CsvWriter">
+          <io:FileName>VisibleGoalLocationPilot\Test\DigitalInputStateUnrewarded.csv</io:FileName>
+          <io:ListSeparator>,</io:ListSeparator>
+          <io:Append>true</io:Append>
+          <io:Overwrite>false</io:Overwrite>
+          <io:Suffix>Timestamp</io:Suffix>
+          <io:IncludeHeader>true</io:IncludeHeader>
+          <io:Selector>Value.Value,Timestamp.Hour,Timestamp.Minute,Timestamp.Second,Timestamp.Millisecond</io:Selector>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="cv:FileCapture">
+          <cv:FileName>test_animal2026-08-04T11_59_23.avi</cv:FileName>
+          <cv:PlaybackRate>240</cv:PlaybackRate>
+          <cv:StartPosition>0</cv:StartPosition>
+          <cv:PositionUnits>Frames</cv:PositionUnits>
+          <cv:Loop>false</cv:Loop>
+          <cv:Playing>true</cv:Playing>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="rx:BehaviorSubject">
+        <Name>Image1</Name>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="cv:Grayscale" />
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="cv:Smooth">
+          <cv:SmoothType>Gaussian</cv:SmoothType>
+          <cv:Size1>25</cv:Size1>
+          <cv:Size2>0</cv:Size2>
+          <cv:Sigma1>0</cv:Sigma1>
+          <cv:Sigma2>0</cv:Sigma2>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="cv:CropPolygon">
+          <cv:Regions>
+            <cv:ArrayOfPoint>
+              <cv:Point>
+                <cv:X>859</cv:X>
+                <cv:Y>206</cv:Y>
+              </cv:Point>
+              <cv:Point>
+                <cv:X>949</cv:X>
+                <cv:Y>206</cv:Y>
+              </cv:Point>
+              <cv:Point>
+                <cv:X>967</cv:X>
+                <cv:Y>956</cv:Y>
+              </cv:Point>
+              <cv:Point>
+                <cv:X>883</cv:X>
+                <cv:Y>954</cv:Y>
+              </cv:Point>
+            </cv:ArrayOfPoint>
+          </cv:Regions>
+          <cv:MaskType>ToZero</cv:MaskType>
+          <cv:FillValue>
+            <cv:Val0>255</cv:Val0>
+            <cv:Val1>255</cv:Val1>
+            <cv:Val2>255</cv:Val2>
+            <cv:Val3>255</cv:Val3>
+          </cv:FillValue>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="rx:PublishSubject">
+        <Name>CroppedFrames</Name>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="cv:Threshold">
+          <cv:ThresholdValue>40</cv:ThresholdValue>
+          <cv:MaxValue>100</cv:MaxValue>
+          <cv:ThresholdType>BinaryInv</cv:ThresholdType>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="cv:FindContours">
+          <cv:Mode>External</cv:Mode>
+          <cv:Method>ChainApproxSimple</cv:Method>
+          <cv:Offset>
+            <cv:X>0</cv:X>
+            <cv:Y>0</cv:Y>
+          </cv:Offset>
+          <cv:MinArea>20</cv:MinArea>
+          <cv:MaxArea xsi:nil="true" />
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="cv:BinaryRegionAnalysis" />
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="cv:LargestBinaryRegion" />
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Centroid</Selector>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Timestamp" />
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="io:CsvWriter">
+          <io:FileName>test\centroid.csv</io:FileName>
+          <io:Delimiter>,</io:Delimiter>
+          <io:ListSeparator />
+          <io:Append>false</io:Append>
+          <io:Overwrite>false</io:Overwrite>
+          <io:Suffix>Timestamp</io:Suffix>
+          <io:IncludeHeader>true</io:IncludeHeader>
+          <io:Selector>Value,Timestamp.Hour,Timestamp.Minute,Timestamp.Second,Timestamp.Millisecond</io:Selector>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="rx:PublishSubject">
+        <Name>Centroid Broadcast</Name>
+      </Expression>
+      <Expression xsi:type="rx:BehaviorSubject">
+        <Name>Frames</Name>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Timestamp" />
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="io:CsvWriter">
+          <io:FileName>test\behaviourvideoframes.csv</io:FileName>
+          <io:Delimiter>,</io:Delimiter>
+          <io:ListSeparator />
+          <io:Append>false</io:Append>
+          <io:Overwrite>false</io:Overwrite>
+          <io:Suffix>Timestamp</io:Suffix>
+          <io:IncludeHeader>true</io:IncludeHeader>
+          <io:Selector>Timestamp.Hour,Timestamp.Minute,Timestamp.Second,Timestamp.Millisecond</io:Selector>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="cv:VideoWriter">
+            <cv:FileName>test\test_animal.avi</cv:FileName>
+            <cv:Suffix>Timestamp</cv:Suffix>
+            <cv:Buffered>true</cv:Buffered>
+            <cv:Overwrite>false</cv:Overwrite>
+            <cv:FourCC>FMP4</cv:FourCC>
+            <cv:FrameRate>30</cv:FrameRate>
+            <cv:FrameSize>
+              <cv:Width>0</cv:Width>
+              <cv:Height>0</cv:Height>
+            </cv:FrameSize>
+            <cv:ResizeInterpolation>NearestNeighbor</cv:ResizeInterpolation>
+          </Combinator>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="FloatProperty">
+          <Value>6000</Value>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="PropertyMapping">
+        <PropertyMappings>
+          <Property Name="Frequency" />
+        </PropertyMappings>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="cv:CropPolygon">
+          <cv:Regions>
+            <cv:ArrayOfPoint>
+              <cv:Point>
+                <cv:X>861</cv:X>
+                <cv:Y>446</cv:Y>
+              </cv:Point>
+              <cv:Point>
+                <cv:X>957</cv:X>
+                <cv:Y>446</cv:Y>
+              </cv:Point>
+              <cv:Point>
+                <cv:X>957</cv:X>
+                <cv:Y>588</cv:Y>
+              </cv:Point>
+              <cv:Point>
+                <cv:X>861</cv:X>
+                <cv:Y>588</cv:Y>
+              </cv:Point>
+            </cv:ArrayOfPoint>
+          </cv:Regions>
+          <cv:MaskType>ToZero</cv:MaskType>
+          <cv:FillValue>
+            <cv:Val0>0</cv:Val0>
+            <cv:Val1>0</cv:Val1>
+            <cv:Val2>0</cv:Val2>
+            <cv:Val3>0</cv:Val3>
+          </cv:FillValue>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="cv:Threshold">
+          <cv:ThresholdValue>100</cv:ThresholdValue>
+          <cv:MaxValue>100</cv:MaxValue>
+          <cv:ThresholdType>Binary</cv:ThresholdType>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="dsp:Sum" />
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Val0</Selector>
+      </Expression>
+      <Expression xsi:type="rx:Condition">
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="WorkflowInput">
+              <Name>Source1</Name>
+            </Expression>
+            <Expression xsi:type="LessThan">
+              <Operand xsi:type="DoubleProperty">
+                <Value>1387100</Value>
+              </Operand>
+            </Expression>
+            <Expression xsi:type="WorkflowOutput" />
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="dsp:FunctionGenerator">
+          <dsp:BufferLength>441</dsp:BufferLength>
+          <dsp:Frequency>6000</dsp:Frequency>
+          <dsp:Waveform>Sine</dsp:Waveform>
+          <dsp:SampleRate>44100</dsp:SampleRate>
+          <dsp:Amplitude>1</dsp:Amplitude>
+          <dsp:Offset>0</dsp:Offset>
+          <dsp:Phase>0</dsp:Phase>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="al:AudioPlayback">
+          <al:SampleRate>44100</al:SampleRate>
+          <al:State>Playing</al:State>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>animal_pos_freq</Name>
+      </Expression>
+      <Expression xsi:type="PropertyMapping">
+        <PropertyMappings>
+          <Property Name="Frequency" Selector="it" />
+        </PropertyMappings>
+      </Expression>
+      <Expression xsi:type="rx:Condition">
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="WorkflowInput">
+              <Name>Source1</Name>
+            </Expression>
+            <Expression xsi:type="GreaterThanOrEqual">
+              <Operand xsi:type="DoubleProperty">
+                <Value>1387100</Value>
+              </Operand>
+            </Expression>
+            <Expression xsi:type="WorkflowOutput" />
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="dsp:FunctionGenerator">
+          <dsp:BufferLength>441</dsp:BufferLength>
+          <dsp:Frequency>17830.229846816888</dsp:Frequency>
+          <dsp:Waveform>Square</dsp:Waveform>
+          <dsp:SampleRate>44100</dsp:SampleRate>
+          <dsp:Amplitude>100</dsp:Amplitude>
+          <dsp:Offset>0</dsp:Offset>
+          <dsp:Phase>0</dsp:Phase>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="al:AudioPlayback">
+          <al:SampleRate>44100</al:SampleRate>
+          <al:State>Playing</al:State>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="al:AudioWriter">
+            <al:FileName>test\linear_audio_test</al:FileName>
+            <al:Suffix>None</al:Suffix>
+            <al:Buffered>true</al:Buffered>
+            <al:Overwrite>true</al:Overwrite>
+            <al:SampleRate>44100</al:SampleRate>
+          </Combinator>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>Centroid Broadcast</Name>
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Y</Selector>
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>CroppedFrames</Name>
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Size.Height</Selector>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Zip" />
+      </Expression>
+      <Expression xsi:type="scr:ExpressionTransform">
+        <scr:Expression>Item1/Item2</scr:Expression>
+      </Expression>
+      <Expression xsi:type="scr:ExpressionTransform">
+        <scr:Name>animal_pos_freq</scr:Name>
+        <scr:Expression>Math.Pow(10,it)*2000</scr:Expression>
+      </Expression>
+      <Expression xsi:type="rx:PublishSubject">
+        <Name>animal_pos_freq</Name>
+      </Expression>
+    </Nodes>
+    <Edges>
+      <Edge From="0" To="1" Label="Source1" />
+      <Edge From="1" To="2" Label="Source1" />
+      <Edge From="5" To="6" Label="Source1" />
+      <Edge From="6" To="7" Label="Source1" />
+      <Edge From="7" To="8" Label="Source1" />
+      <Edge From="9" To="10" Label="Source1" />
+      <Edge From="10" To="11" Label="Source1" />
+      <Edge From="12" To="13" Label="Source1" />
+      <Edge From="13" To="14" Label="Source1" />
+      <Edge From="15" To="16" Label="Source1" />
+      <Edge From="16" To="17" Label="Source1" />
+      <Edge From="17" To="18" Label="Source1" />
+      <Edge From="19" To="20" Label="Source1" />
+      <Edge From="19" To="33" Label="Source1" />
+      <Edge From="20" To="21" Label="Source1" />
+      <Edge From="21" To="22" Label="Source1" />
+      <Edge From="22" To="23" Label="Source1" />
+      <Edge From="22" To="39" Label="Source1" />
+      <Edge From="23" To="24" Label="Source1" />
+      <Edge From="24" To="25" Label="Source1" />
+      <Edge From="25" To="26" Label="Source1" />
+      <Edge From="26" To="27" Label="Source1" />
+      <Edge From="27" To="28" Label="Source1" />
+      <Edge From="28" To="29" Label="Source1" />
+      <Edge From="29" To="30" Label="Source1" />
+      <Edge From="29" To="32" Label="Source1" />
+      <Edge From="30" To="31" Label="Source1" />
+      <Edge From="33" To="34" Label="Source1" />
+      <Edge From="33" To="36" Label="Source1" />
+      <Edge From="34" To="35" Label="Source1" />
+      <Edge From="37" To="38" Label="Source1" />
+      <Edge From="38" To="44" Label="Source1" />
+      <Edge From="39" To="40" Label="Source1" />
+      <Edge From="40" To="41" Label="Source1" />
+      <Edge From="41" To="42" Label="Source1" />
+      <Edge From="42" To="43" Label="Source1" />
+      <Edge From="42" To="48" Label="Source1" />
+      <Edge From="43" To="44" Label="Source2" />
+      <Edge From="44" To="45" Label="Source1" />
+      <Edge From="46" To="47" Label="Source1" />
+      <Edge From="47" To="49" Label="Source1" />
+      <Edge From="48" To="49" Label="Source2" />
+      <Edge From="49" To="50" Label="Source1" />
+      <Edge From="52" To="53" Label="Source1" />
+      <Edge From="53" To="56" Label="Source1" />
+      <Edge From="54" To="55" Label="Source1" />
+      <Edge From="55" To="56" Label="Source2" />
+      <Edge From="56" To="57" Label="Source1" />
+      <Edge From="57" To="58" Label="Source1" />
+      <Edge From="58" To="59" Label="Source1" />
+    </Edges>
+  </Workflow>
+</WorkflowBuilder>
