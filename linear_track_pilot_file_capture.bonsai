@@ -4,9 +4,9 @@
                  xmlns:cv="clr-namespace:Bonsai.Vision;assembly=Bonsai.Vision"
                  xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
                  xmlns:io="clr-namespace:Bonsai.IO;assembly=Bonsai.System"
-                 xmlns:scr="clr-namespace:Bonsai.Scripting.Expressions;assembly=Bonsai.Scripting.Expressions"
                  xmlns:dsp="clr-namespace:Bonsai.Dsp;assembly=Bonsai.Dsp"
                  xmlns:al="clr-namespace:Bonsai.Audio;assembly=Bonsai.Audio"
+                 xmlns:scr="clr-namespace:Bonsai.Scripting.Expressions;assembly=Bonsai.Scripting.Expressions"
                  xmlns:vid="clr-namespace:Bonsai.Video;assembly=Bonsai.Video"
                  xmlns:res="clr-namespace:Bonsai.Resources;assembly=Bonsai.System"
                  xmlns:beh="clr-namespace:Harp.Behavior;assembly=Harp.Behavior"
@@ -16,7 +16,7 @@
     <Nodes>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="cv:FileCapture">
-          <cv:FileName>test_animal_data\test_animal2026-08-04T11_59_23.avi</cv:FileName>
+          <cv:FileName>test_animal2026-08-04T11_59_23.avi</cv:FileName>
           <cv:PlaybackRate>0</cv:PlaybackRate>
           <cv:StartPosition>0</cv:StartPosition>
           <cv:PositionUnits>Frames</cv:PositionUnits>
@@ -76,7 +76,7 @@
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="cv:Threshold">
           <cv:ThresholdValue>40</cv:ThresholdValue>
-          <cv:MaxValue>100</cv:MaxValue>
+          <cv:MaxValue>200</cv:MaxValue>
           <cv:ThresholdType>BinaryInv</cv:ThresholdType>
         </Combinator>
       </Expression>
@@ -104,15 +104,17 @@
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="rx:Timestamp" />
       </Expression>
-      <Expression xsi:type="io:CsvWriter">
-        <io:FileName>test_animal_data\centroid.csv</io:FileName>
-        <io:Delimiter>,</io:Delimiter>
-        <io:ListSeparator />
-        <io:Append>false</io:Append>
-        <io:Overwrite>false</io:Overwrite>
-        <io:Suffix>Timestamp</io:Suffix>
-        <io:IncludeHeader>true</io:IncludeHeader>
-        <io:Selector>Value,Timestamp.Hour,Timestamp.Minute,Timestamp.Second,Timestamp.Millisecond</io:Selector>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="io:CsvWriter">
+          <io:FileName>test_animal_data\centroid.csv</io:FileName>
+          <io:Delimiter>,</io:Delimiter>
+          <io:ListSeparator />
+          <io:Append>false</io:Append>
+          <io:Overwrite>false</io:Overwrite>
+          <io:Suffix>Timestamp</io:Suffix>
+          <io:IncludeHeader>true</io:IncludeHeader>
+          <io:Selector>Value,Timestamp.Hour,Timestamp.Minute,Timestamp.Second,Timestamp.Millisecond</io:Selector>
+        </Builder>
       </Expression>
       <Expression xsi:type="rx:PublishSubject">
         <Name>Centroid Broadcast</Name>
@@ -123,30 +125,73 @@
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="rx:Timestamp" />
       </Expression>
-      <Expression xsi:type="io:CsvWriter">
-        <io:FileName>test_animal_data\behaviourvideoframes.csv</io:FileName>
-        <io:Delimiter>,</io:Delimiter>
-        <io:ListSeparator />
-        <io:Append>false</io:Append>
-        <io:Overwrite>false</io:Overwrite>
-        <io:Suffix>Timestamp</io:Suffix>
-        <io:IncludeHeader>true</io:IncludeHeader>
-        <io:Selector>Timestamp.Hour,Timestamp.Minute,Timestamp.Second,Timestamp.Millisecond</io:Selector>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="io:CsvWriter">
+          <io:FileName>test_animal_data\behaviourvideoframes.csv</io:FileName>
+          <io:Delimiter>,</io:Delimiter>
+          <io:ListSeparator />
+          <io:Append>false</io:Append>
+          <io:Overwrite>false</io:Overwrite>
+          <io:Suffix>Timestamp</io:Suffix>
+          <io:IncludeHeader>true</io:IncludeHeader>
+          <io:Selector>Timestamp.Hour,Timestamp.Minute,Timestamp.Second,Timestamp.Millisecond</io:Selector>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="cv:VideoWriter">
+            <cv:FileName>test_animal_data\test_animal.avi</cv:FileName>
+            <cv:Suffix>Timestamp</cv:Suffix>
+            <cv:Buffered>true</cv:Buffered>
+            <cv:Overwrite>false</cv:Overwrite>
+            <cv:FourCC>FMP4</cv:FourCC>
+            <cv:FrameRate>30</cv:FrameRate>
+            <cv:FrameSize>
+              <cv:Width>0</cv:Width>
+              <cv:Height>0</cv:Height>
+            </cv:FrameSize>
+            <cv:ResizeInterpolation>NearestNeighbor</cv:ResizeInterpolation>
+          </Combinator>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>animal_pos_freq</Name>
+      </Expression>
+      <Expression xsi:type="PropertyMapping">
+        <PropertyMappings>
+          <Property Name="Frequency" Selector="it" />
+        </PropertyMappings>
       </Expression>
       <Expression xsi:type="Combinator">
-        <Combinator xsi:type="cv:VideoWriter">
-          <cv:FileName>test_animal_data\test_animal.avi</cv:FileName>
-          <cv:Suffix>Timestamp</cv:Suffix>
-          <cv:Buffered>true</cv:Buffered>
-          <cv:Overwrite>false</cv:Overwrite>
-          <cv:FourCC>FMP4</cv:FourCC>
-          <cv:FrameRate>30</cv:FrameRate>
-          <cv:FrameSize>
-            <cv:Width>0</cv:Width>
-            <cv:Height>0</cv:Height>
-          </cv:FrameSize>
-          <cv:ResizeInterpolation>NearestNeighbor</cv:ResizeInterpolation>
+        <Combinator xsi:type="dsp:FunctionGenerator">
+          <dsp:BufferLength>500</dsp:BufferLength>
+          <dsp:Frequency>9319.809546339251</dsp:Frequency>
+          <dsp:Waveform>Sine</dsp:Waveform>
+          <dsp:SampleRate>50000</dsp:SampleRate>
+          <dsp:Amplitude>100</dsp:Amplitude>
+          <dsp:Offset>0</dsp:Offset>
+          <dsp:Phase>0</dsp:Phase>
         </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="al:AudioPlayback">
+          <al:SampleRate>50000</al:SampleRate>
+          <al:State>Playing</al:State>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
+          <Combinator xsi:type="al:AudioWriter">
+            <al:Suffix>None</al:Suffix>
+            <al:Buffered>true</al:Buffered>
+            <al:Overwrite>false</al:Overwrite>
+            <al:SampleRate>44100</al:SampleRate>
+          </Combinator>
+        </Builder>
+      </Expression>
+      <Expression xsi:type="Annotation">
+        <Name>normalized y</Name>
+        <Text><![CDATA[calculates the normalized y coordinate of the animal. is between 0 and 1.]]></Text>
       </Expression>
       <Expression xsi:type="SubscribeSubject">
         <Name>Centroid Broadcast</Name>
@@ -154,18 +199,35 @@
       <Expression xsi:type="MemberSelector">
         <Selector>Y</Selector>
       </Expression>
+      <Expression xsi:type="rx:Scan">
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="WorkflowInput">
+              <Name>Source1</Name>
+            </Expression>
+            <Expression xsi:type="scr:ExpressionTransform">
+              <scr:Expression>double.IsNaN(it.Value) ? it.Accumulation : it.Value
+</scr:Expression>
+            </Expression>
+            <Expression xsi:type="WorkflowOutput" />
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
       <Expression xsi:type="SubscribeSubject">
         <Name>CroppedFrames</Name>
       </Expression>
       <Expression xsi:type="MemberSelector">
         <Selector>Size.Height</Selector>
       </Expression>
+      <Expression xsi:type="scr:ExpressionTransform">
+        <scr:Expression>Single(it)</scr:Expression>
+      </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="rx:Zip" />
-      </Expression>
-      <Expression xsi:type="Annotation">
-        <Name>normalized y</Name>
-        <Text><![CDATA[calculates the normalized y coordinate of the animal. is between 0 and 1.]]></Text>
       </Expression>
       <Expression xsi:type="scr:ExpressionTransform">
         <scr:Expression>Item1/Item2</scr:Expression>
@@ -175,38 +237,11 @@
         <Text><![CDATA[formula that determines how fast or slow the tone ramps]]></Text>
       </Expression>
       <Expression xsi:type="scr:ExpressionTransform">
+        <scr:Name>animal_pos_freq</scr:Name>
         <scr:Expression>Math.Pow(10,it)*2000</scr:Expression>
       </Expression>
-      <Expression xsi:type="PropertyMapping">
-        <PropertyMappings>
-          <Property Name="Frequency" Selector="it" />
-        </PropertyMappings>
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="dsp:FunctionGenerator">
-          <dsp:BufferLength>441</dsp:BufferLength>
-          <dsp:Frequency>2185.9938724646186</dsp:Frequency>
-          <dsp:Waveform>Square</dsp:Waveform>
-          <dsp:SampleRate>44100</dsp:SampleRate>
-          <dsp:Amplitude>100</dsp:Amplitude>
-          <dsp:Offset>0</dsp:Offset>
-          <dsp:Phase>0</dsp:Phase>
-        </Combinator>
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="al:AudioPlayback">
-          <al:SampleRate>44100</al:SampleRate>
-          <al:State>Playing</al:State>
-        </Combinator>
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="al:AudioWriter">
-          <al:FileName>test_animal_data\linear_audio_test</al:FileName>
-          <al:Suffix>None</al:Suffix>
-          <al:Buffered>true</al:Buffered>
-          <al:Overwrite>true</al:Overwrite>
-          <al:SampleRate>44100</al:SampleRate>
-        </Combinator>
+      <Expression xsi:type="rx:PublishSubject">
+        <Name>animal_pos_freq</Name>
       </Expression>
       <Expression xsi:type="Disable">
         <Builder xsi:type="Combinator">
@@ -406,29 +441,32 @@
       <Edge From="14" To="17" Label="Source1" />
       <Edge From="15" To="16" Label="Source1" />
       <Edge From="18" To="19" Label="Source1" />
-      <Edge From="19" To="22" Label="Source1" />
+      <Edge From="19" To="20" Label="Source1" />
       <Edge From="20" To="21" Label="Source1" />
-      <Edge From="21" To="22" Label="Source2" />
-      <Edge From="22" To="24" Label="Source1" />
-      <Edge From="23" To="24" Label="Source2" />
-      <Edge From="24" To="26" Label="Source1" />
-      <Edge From="25" To="26" Label="Source2" />
-      <Edge From="26" To="27" Label="Source1" />
+      <Edge From="21" To="22" Label="Source1" />
+      <Edge From="23" To="31" Label="Source1" />
+      <Edge From="24" To="25" Label="Source1" />
+      <Edge From="25" To="26" Label="Source1" />
+      <Edge From="26" To="30" Label="Source1" />
       <Edge From="27" To="28" Label="Source1" />
       <Edge From="28" To="29" Label="Source1" />
-      <Edge From="29" To="30" Label="Source1" />
-      <Edge From="32" To="33" Label="Source1" />
+      <Edge From="29" To="30" Label="Source2" />
+      <Edge From="30" To="31" Label="Source2" />
+      <Edge From="31" To="33" Label="Source1" />
+      <Edge From="32" To="33" Label="Source2" />
       <Edge From="33" To="34" Label="Source1" />
+      <Edge From="36" To="37" Label="Source1" />
       <Edge From="37" To="38" Label="Source1" />
-      <Edge From="38" To="39" Label="Source1" />
-      <Edge From="39" To="40" Label="Source1" />
       <Edge From="41" To="42" Label="Source1" />
       <Edge From="42" To="43" Label="Source1" />
-      <Edge From="44" To="45" Label="Source1" />
+      <Edge From="43" To="44" Label="Source1" />
       <Edge From="45" To="46" Label="Source1" />
-      <Edge From="47" To="48" Label="Source1" />
+      <Edge From="46" To="47" Label="Source1" />
       <Edge From="48" To="49" Label="Source1" />
       <Edge From="49" To="50" Label="Source1" />
+      <Edge From="51" To="52" Label="Source1" />
+      <Edge From="52" To="53" Label="Source1" />
+      <Edge From="53" To="54" Label="Source1" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>
