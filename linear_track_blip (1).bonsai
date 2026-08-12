@@ -400,16 +400,16 @@
         <Combinator xsi:type="dsp:FunctionGenerator">
           <dsp:BufferLength>441</dsp:BufferLength>
           <dsp:Frequency>6000</dsp:Frequency>
-          <dsp:Waveform>Sine</dsp:Waveform>
-          <dsp:SampleRate>44100</dsp:SampleRate>
-          <dsp:Amplitude>1</dsp:Amplitude>
+          <dsp:Waveform>Square</dsp:Waveform>
+          <dsp:SampleRate>50000</dsp:SampleRate>
+          <dsp:Amplitude>100</dsp:Amplitude>
           <dsp:Offset>0</dsp:Offset>
           <dsp:Phase>0</dsp:Phase>
         </Combinator>
       </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="al:AudioPlayback">
-          <al:SampleRate>44100</al:SampleRate>
+          <al:SampleRate>50000</al:SampleRate>
           <al:State>Playing</al:State>
         </Combinator>
       </Expression>
@@ -443,9 +443,9 @@
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="dsp:FunctionGenerator">
           <dsp:BufferLength>441</dsp:BufferLength>
-          <dsp:Frequency>17830.229846816888</dsp:Frequency>
+          <dsp:Frequency>2444.9094915664737</dsp:Frequency>
           <dsp:Waveform>Square</dsp:Waveform>
-          <dsp:SampleRate>44100</dsp:SampleRate>
+          <dsp:SampleRate>50000</dsp:SampleRate>
           <dsp:Amplitude>100</dsp:Amplitude>
           <dsp:Offset>0</dsp:Offset>
           <dsp:Phase>0</dsp:Phase>
@@ -453,7 +453,7 @@
       </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="al:AudioPlayback">
-          <al:SampleRate>44100</al:SampleRate>
+          <al:SampleRate>50000</al:SampleRate>
           <al:State>Playing</al:State>
         </Combinator>
       </Expression>
@@ -473,6 +473,24 @@
       </Expression>
       <Expression xsi:type="MemberSelector">
         <Selector>Y</Selector>
+      </Expression>
+      <Expression xsi:type="rx:Scan">
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="WorkflowInput">
+              <Name>Source1</Name>
+            </Expression>
+            <Expression xsi:type="scr:ExpressionTransform">
+              <scr:Expression>double.IsNaN(it.Value) ? it.Accumulation : it.Value
+</scr:Expression>
+            </Expression>
+            <Expression xsi:type="WorkflowOutput" />
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
+          </Edges>
+        </Workflow>
       </Expression>
       <Expression xsi:type="SubscribeSubject">
         <Name>CroppedFrames</Name>
@@ -539,12 +557,13 @@
       <Edge From="48" To="49" Label="Source2" />
       <Edge From="49" To="50" Label="Source1" />
       <Edge From="52" To="53" Label="Source1" />
-      <Edge From="53" To="56" Label="Source1" />
-      <Edge From="54" To="55" Label="Source1" />
-      <Edge From="55" To="56" Label="Source2" />
-      <Edge From="56" To="57" Label="Source1" />
+      <Edge From="53" To="54" Label="Source1" />
+      <Edge From="54" To="57" Label="Source1" />
+      <Edge From="55" To="56" Label="Source1" />
+      <Edge From="56" To="57" Label="Source2" />
       <Edge From="57" To="58" Label="Source1" />
       <Edge From="58" To="59" Label="Source1" />
+      <Edge From="59" To="60" Label="Source1" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>
